@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI提示词生成器 | 支持豆包和gptimage2.x</title>
-<meta name="app-version" content="1.0.0">
+<meta name="app-version" content="2.0.0">
 <style>
   :root {
     --bg: #0f1117; --card: #1a1d27;
@@ -53,30 +53,61 @@
   footer { color: var(--sub); font-size: 11px; text-align: center; margin-top: 30px; line-height: 1.9; }
   .tips { font-size: 12px; color: var(--sub); line-height: 1.8; margin-top: 10px; }
   .tips b { color: var(--text); }
+
+  :root, body.theme-female {
+    --accent: #ff6b9d; --accent2: #c44dff;
+  }
+  body.theme-male {
+    --accent: #4da3ff; --accent2: #2d7cff;
+  }
+
+  .gender-tabs {
+    display: flex; gap: 8px; margin-bottom: 16px;
+  }
+  .gender-tab {
+    flex: 1; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--input); color: var(--sub); font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all .2s; text-align: center;
+  }
+  .gender-tab:hover { color: var(--text); border-color: var(--accent); }
+  .gender-tab.active {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    color: #fff; border-color: transparent;
+  }
+
+  .age-tabs {
+    display: flex; gap: 8px;
+  }
+  .age-tab {
+    flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--input); color: var(--sub); font-size: 13px; cursor: pointer;
+    transition: all .2s; text-align: center;
+  }
+  .age-tab:hover { color: var(--text); border-color: var(--accent); }
+  .age-tab.active {
+    background: var(--card); color: var(--accent); border-color: var(--accent); font-weight: 600;
+  }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <h1>AI提示词生成器 <span id="version-badge" style="font-size:12px;font-weight:500;color:var(--sub);background:var(--card);padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle;-webkit-text-fill-color:var(--sub);font-family:monospace;">v1.0.0</span></h1>
+    <h1>AI提示词生成器 <span id="version-badge" style="font-size:12px;font-weight:500;color:var(--sub);background:var(--card);padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle;-webkit-text-fill-color:var(--sub);font-family:monospace;">v2.0.0</span></h1>
     <p>只需选择，就能自动生成结构完整的中文提示词。<br>生成后复制粘贴到 豆包即可。<br>图片做好后可以去 <a href="post.html" style="color:var(--accent)">投稿文案生成器</a>。</p>
   </header>
 
   <div class="card" id="gender-switch-card">
     <h2>人物类型</h2>
-    <div class="grid">
-      <div><label>性别 × 年龄段</label>
-        <select id="gender-type">
-          <option value="female-young" selected>青年女性</option>
-          <option value="female-middle">中年女性（待完善）</option>
-          <option value="female-old">老年女性（待完善）</option>
-          <option value="male-young">青年男性（待完善）</option>
-          <option value="male-middle">中年男性（待完善）</option>
-          <option value="male-old">老年男性（待完善）</option>
-        </select>
-      </div>
+    <div class="gender-tabs">
+      <div class="gender-tab active" data-gender="female">女性</div>
+      <div class="gender-tab" data-gender="male">男性</div>
     </div>
-    <p class="tips">切换后将加载对应的场景、体型、服装等数据。当前仅「青年女性」数据完整可用，其余类型数据将在后续版本补充。</p>
+    <div class="age-tabs">
+      <div class="age-tab active" data-age="young">青年</div>
+      <div class="age-tab" data-age="middle">中年</div>
+      <div class="age-tab" data-age="old">老年</div>
+    </div>
+    <p class="tips">切换性别和年龄段后，将加载对应的场景、体型、服装等数据。</p>
   </div>
 
   <div class="card">
@@ -84,11 +115,7 @@
     <div class="grid">
       <div><label>场景预设</label><select id="scene"></select></div>
       <div><label>风格调性</label>
-        <select id="taste">
-          <option value="seiso">清纯日常</option>
-          <option value="uraaka">私密女友感</option>
-          <option value="darashina">随性松弛感</option>
-        </select>
+        <select id="taste"></select>
       </div>
       <div><label>拍摄动机（为什么拍）</label><select id="reason"></select></div>
       <div><label>宽高比</label>
@@ -237,6 +264,14 @@ function initAfterLoad() {
   fillSelect("expression", EXPRESSION);
   fillSelect("framing", FRAMING);
   fillSelect("camera", CAMERA);
+  var tasteSel = document.getElementById("taste");
+  tasteSel.innerHTML = "";
+  Object.keys(TASTE).forEach(function(key) {
+    var o = document.createElement("option");
+    o.textContent = TASTE[key].label || key;
+    o.value = key;
+    tasteSel.appendChild(o);
+  });
   var sceneSel = document.getElementById("scene");
   sceneSel.innerHTML = "";
   Object.keys(SCENES).forEach(function(name) {
@@ -247,10 +282,35 @@ function initAfterLoad() {
   fillSceneOptions();
 }
 
-document.getElementById("gender-type").addEventListener("change", function() {
-  loadGender(this.value);
+var currentGender = 'female';
+var currentAge = 'young';
+
+function updateGenderTabs() {
+  document.querySelectorAll('.gender-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.gender === currentGender);
+  });
+  document.querySelectorAll('.age-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.age === currentAge);
+  });
+  document.body.classList.remove('theme-female', 'theme-male');
+  document.body.classList.add('theme-' + currentGender);
+  loadGender(currentGender + '-' + currentAge);
+}
+
+document.querySelectorAll('.gender-tab').forEach(function(t) {
+  t.addEventListener('click', function() {
+    currentGender = this.dataset.gender;
+    updateGenderTabs();
+  });
+});
+document.querySelectorAll('.age-tab').forEach(function(t) {
+  t.addEventListener('click', function() {
+    currentAge = this.dataset.age;
+    updateGenderTabs();
+  });
 });
 
+document.body.classList.add('theme-female');
 loadGender('female-young');
 
 // l = 下拉显示的短标签 / t = 提示词中使用的完整描述
@@ -283,30 +343,38 @@ document.getElementById("refmode").addEventListener("change", fillSceneOptions);
 const val = id => document.getElementById(id).value;
 const pickT = (id, arr) => arr[+val(id)].t;
 // 地区 → 提示词中的人物地区描述
+const ageLabel = () => ({
+  young: "20岁左右年轻成年",
+  middle: "30-40岁左右成熟",
+  old: "50岁左右中老年",
+}[currentAge] || "20岁左右年轻成年");
+
+const genderLabel = () => currentGender === "male" ? "男性" : "女性";
+
 const ethnicity = () => ({
-  eastasia: "东亚女性",
-  westasia: "西亚（中东）女性",
-  southasia: "南亚女性",
-  western: "欧美女性",
-  africa: "非洲女性",
-  southamerica: "南美（拉丁裔）女性",
-}[val("ethnicity")] || "东亚女性");
+  eastasia: "东亚",
+  westasia: "西亚（中东）",
+  southasia: "南亚",
+  western: "欧美",
+  africa: "非洲",
+  southamerica: "南美（拉丁裔）",
+}[val("ethnicity")] || "东亚") + genderLabel();
 
 function personBlock(useRef, t) {
   const mode = val("faceMode");
   const acc = pickT("accessory", ACCESSORY);
   const accTxt = acc ? acc + "。" : "";
   if (mode === "pov") {
-    return `本人的主观视角（POV）。俯视自己身体的角度，脸不在画框中，从锁骨下方到大腿~脚尖入镜。20岁左右年轻成年${ethnicity()}。${pickT("body", BODY)}。${val("hairColor")}色头发末梢有几根自然落在肩到胸前。${accTxt}${t.person ? t.person + "。" : ""}`;
+    return `本人的主观视角（POV）。俯视自己身体的角度，脸不在画框中，从锁骨下方到大腿~脚尖入镜。${ageLabel()}${ethnicity()}。${pickT("body", BODY)}。${val("hairColor")}色头发末梢有几根自然落在肩到胸前。${accTxt}${t.person ? t.person + "。" : ""}`;
   }
   let base;
   const refMode = val("refmode");
   if (refMode === "use") {
-    base = `以上传图片人物为最重要参考，脸型轮廓、眼鼻眉眼唇形与上传图完全一致，发型发色妆容气质也作为同一人物完全保持。20岁左右年轻成年${ethnicity()}。${pickT("body", BODY)}。瞳孔有小而清澈的高光。${pickT("expression", EXPRESSION)}。`;
+    base = `以上传图片人物为最重要参考，脸型轮廓、眼鼻眉眼唇形与上传图完全一致，发型发色妆容气质也作为同一人物完全保持。${ageLabel()}${ethnicity()}。${pickT("body", BODY)}。瞳孔有小而清澈的高光。${pickT("expression", EXPRESSION)}。`;
   } else if (refMode === "hair") {
-    base = `参考上传图片中人物的发型和发饰并完全保持一致，脸部为新生成。20岁左右年轻成年${ethnicity()}。有透明感的水润年轻肌肤。${val("mood")}气质的、不显稚嫩的端正面容。${pickT("body", BODY)}。${pickT("makeup", MAKEUP)}。瞳孔有小而清澈的高光。${pickT("expression", EXPRESSION)}。`;
+    base = `参考上传图片中人物的发型和发饰并完全保持一致，脸部为新生成。${ageLabel()}${ethnicity()}。有透明感的水润年轻肌肤。${val("mood")}气质的、不显稚嫩的端正面容。${pickT("body", BODY)}。${pickT("makeup", MAKEUP)}。瞳孔有小而清澈的高光。${pickT("expression", EXPRESSION)}。`;
   } else {
-    base = `20岁左右年轻成年${ethnicity()}。有透明感的水润年轻肌肤。${val("mood")}气质的、不显稚嫩的端正面容。${pickT("body", BODY)}。${val("hairColor")}色头发，${pickT("hairStyle", HAIRSTYLE)}。${pickT("makeup", MAKEUP)}。瞳孔有小而清澈的高光。${pickT("expression", EXPRESSION)}。`;
+    base = `${ageLabel()}${ethnicity()}。有透明感的水润年轻肌肤。${val("mood")}气质的、不显稚嫩的端正面容。${pickT("body", BODY)}。${val("hairColor")}色头发，${pickT("hairStyle", HAIRSTYLE)}。${pickT("makeup", MAKEUP)}。瞳孔有小而清澈的高光。${pickT("expression", EXPRESSION)}。`;
   }
   if (mode === "mask") base += "戴着干净的白色无纺布口罩遮住下半脸，表情只通过眼神传达。";
   if (mode === "phone") base += "镜中自拍，手中智能手机自然遮住大部分脸部。";
@@ -370,9 +438,9 @@ function generateSheet() {
     ? `以上传图片的人物・角色为最重要参考，制作同一人物的角色设定表。上传图是写实就保持写实风，是插画就保持那种画风・线条・上色・质感。`
     : sheetRef === "hair"
     ? `参考上传图片中人物的发型和发饰并完全保持一致，制作角色设定表。写实照片级真实的${ethnicity()}。
-20岁左右年轻成年${ethnicity()}。有透明感的水润年轻肌肤。${val("mood")}气质的、不显稚嫩的端正面容。${pickT("body", BODY)}。${pickT("makeup", MAKEUP)}。`
+${ageLabel()}${ethnicity()}。有透明感的水润年轻肌肤。${val("mood")}气质的、不显稚嫩的端正面容。${pickT("body", BODY)}。${pickT("makeup", MAKEUP)}。`
     : `请制作以下人物的角色设定表。写实照片级真实的${ethnicity()}。
-20岁左右年轻成年${ethnicity()}。有透明感的水润年轻肌肤。${val("mood")}气质的、不显稚嫩的端正面容。${pickT("body", BODY)}。${val("hairColor")}色头发，${pickT("hairStyle", HAIRSTYLE)}。${pickT("makeup", MAKEUP)}。`;
+${ageLabel()}${ethnicity()}。有透明感的水润年轻肌肤。${val("mood")}气质的、不显稚嫩的端正面容。${pickT("body", BODY)}。${val("hairColor")}色头发，${pickT("hairStyle", HAIRSTYLE)}。${pickT("makeup", MAKEUP)}。`;
   const prompt =
 `${useRef ? "（请先上传想作为原型的图片再发送）\n" : ""}${person}
 
