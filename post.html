@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI美女 投稿文案生成器 | X运营</title>
+<style>
+  :root {
+    --bg: #0f1117; --card: #1a1d27;
+    --text: #e8eaf0; --sub: #9aa0b0; --accent: #4da3ff; --accent2: #7c5cff;
+    --border: #2a2e3d; --input: #141722;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh; padding: 24px 16px 60px;
+  }
+  .container { max-width: 760px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 28px; }
+  h1 {
+    font-size: 26px; font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  header p { color: var(--sub); font-size: 13px; margin-top: 8px; line-height: 1.7; }
+  header a { color: var(--accent); }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px; margin-bottom: 16px;
+  }
+  .card h2 { font-size: 15px; margin-bottom: 14px; color: var(--accent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  label { display: block; font-size: 12px; color: var(--sub); margin-bottom: 4px; }
+  select, input[type=text] {
+    width: 100%; padding: 9px 10px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--input); color: var(--text); font-size: 14px;
+  }
+  select:focus, input:focus, textarea:focus { outline: 1px solid var(--accent); }
+  .btn-row { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+  button {
+    padding: 12px 22px; border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: transform .1s, opacity .2s;
+  }
+  button:active { transform: scale(.97); }
+  .btn-main { background: linear-gradient(90deg, var(--accent), var(--accent2)); color: #fff; flex: 1; }
+  .btn-sub { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+  .btn-mini { padding: 8px 14px; font-size: 13px; }
+  textarea {
+    width: 100%; padding: 14px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--input); color: var(--text);
+    font-size: 13px; line-height: 1.8; resize: vertical;
+  }
+  #output { min-height: 280px; }
+  .copy-ok { background: #2ecc71 !important; }
+  footer { color: var(--sub); font-size: 11px; text-align: center; margin-top: 30px; line-height: 1.9; }
+  .tips { font-size: 12px; color: var(--sub); line-height: 1.8; margin-top: 10px; }
+  .tips b { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>AI美女 投稿文案生成器</h1>
+    <p>选择好角色设定和图片场景，自动生成让 豆包 写3条文案的提示词。<br>复制后粘贴给 豆包 即可。图片生成请去 <a href="index.html">提示词生成器</a>。</p>
+  </header>
+
+  <div class="card">
+    <h2>1. 角色设定（以谁的身份发）</h2>
+    <div class="grid">
+      <div><label>已保存角色</label><select id="personaSlot" onchange="loadPersona()"></select></div>
+      <div><label>名字</label><input type="text" id="pName" placeholder="美咲"></div>
+      <div><label>年龄（20岁以上）</label><input type="text" id="pAge" placeholder="24岁"></div>
+      <div><label>职业</label><input type="text" id="pJob" placeholder="东京的上班族OL"></div>
+      <div><label>性格</label><input type="text" id="pChar" placeholder="清纯但有点怕生"></div>
+      <div><label>说话风格</label><input type="text" id="pTone" placeholder="亲切随和。有点小寂寞。少用表情符号"></div>
+      <div><label>兴趣爱好</label><input type="text" id="pHobby" placeholder="咖啡馆、旅行、看电影"></div>
+      <div><label>开小号的原因</label><input type="text" id="pWhy" placeholder="想发平时不能说的真心话"></div>
+      <div><label>和粉丝的距离感</label><input type="text" id="pDist" placeholder="朋友以上、恋人未满"></div>
+    </div>
+    <div class="btn-row" style="margin-bottom:0">
+      <button class="btn-sub btn-mini" onclick="savePersona()">💾 保存当前设定</button>
+      <button class="btn-sub btn-mini" onclick="deletePersona()">🗑 删除选中的</button>
+    </div>
+    <p class="tips">角色设定保存在浏览器本地（仅这台电脑）。<b>每次发文保持人设统一</b>是积累粉丝的基础。</p>
+  </div>
+
+  <div class="card">
+    <h2>2. 投稿素材</h2>
+    <div class="grid">
+      <div><label>图片场景</label><select id="scene"></select></div>
+      <div><label>投稿类型</label>
+        <select id="postType">
+          <option value="mix" selected>随机（3种类型各出1条）</option>
+          <option value="daily">日常汇报型</option>
+          <option value="consult">烦恼咨询型</option>
+          <option value="story">故事叙述型</option>
+        </select>
+      </div>
+      <div><label>结尾方式</label>
+        <select id="ending">
+          <option value="q" selected>以提问结尾（更容易收到回复）</option>
+          <option value="soft">以余韵结尾（不带提问）</option>
+        </select>
+      </div>
+      <div><label>字数长度</label>
+        <select id="length">
+          <option value="short">短（~80字）</option>
+          <option value="mid" selected>中（~140字）</option>
+          <option value="long">长（数行叙述）</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:12px"><label>图片内容备注（可选，写了更精准）</label>
+      <textarea id="imageMemo" style="min-height:60px" placeholder="例: 白针织衫在卧室自拍，比V手势，夜晚暖色间接灯光"></textarea>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-main" onclick="generate()">生成投稿文案提示词</button>
+  </div>
+
+  <div class="card">
+    <h2>生成的提示词</h2>
+    <textarea id="output" readonly placeholder="这里会显示生成的提示词。点击「生成投稿文案提示词」按钮开始。"></textarea>
+    <div class="btn-row" style="margin-bottom:0">
+      <button class="btn-main" id="copyBtn" onclick="copyPrompt()">复制</button>
+    </div>
+    <p class="tips">粘贴到 豆包 它会帮你写出3条文案。<b>最好把图片一起上传</b>，这样它会提到图里的小物、光线等细节，精准度更高。<br>投稿比例参考: 日常5成 / 脸和私服2成 / 泳装季节2成 / 告知1成。不要每天同一种类型。</p>
+  </div>
+
+  <footer>
+    本工具面向20岁以上虚构成人角色的账号运营。禁止冒充真实人物或欺骗粉丝。<br>
+    <a href="index.html" style="color:#4da3ff">→ 图片提示词生成器</a>
+  </footer>
+</div>
+
+<script>
+const SCENES = ["自家卧室（酒店风）","夜晚卧室","清晨厨房","放学后咖啡馆","约会对座","刚起床自拍","假日清晨床上","沐浴时间","健身归来","温泉旅馆","深夜便利店归来","夜间自助洗衣店","正午海滩","傍晚海滩","海边步道","夜间泳池","夏日祭典","雨天无人车站","夜间街头","护士休息时间","保育园教室","新人OL办公室","咖啡馆店员后台","体育场观赛","更衣室镜前","夜间酒会归来","其他（在备注里说明）"];
+
+const TYPE_GUIDE = {
+  daily: "【日常汇报型】今天发生的一件小事+一点小情绪。例:「明明涂了防晒霜，肩膀还是有点红了的感觉」",
+  consult: "【烦恼咨询型】有点小迷茫或不安向粉丝请教。例:「新买的这件泳衣，穿起来好看吗？选白色是不是对的啊」",
+  story: "【故事叙述型】简短说说拍照前的经历。例:「本来没打算来的，昨晚突然被朋友临时叫出来了」",
+};
+
+function fillScenes() {
+  const el = document.getElementById("scene");
+  SCENES.forEach(s => { const o = document.createElement("option"); o.textContent = s; el.appendChild(o); });
+}
+
+const P_FIELDS = ["pName","pAge","pJob","pChar","pTone","pHobby","pWhy","pDist"];
+function store() { return JSON.parse(localStorage.getItem("aibijo_personas") || "{}"); }
+function refreshSlots(selected) {
+  const el = document.getElementById("personaSlot");
+  el.innerHTML = "";
+  const o0 = document.createElement("option"); o0.value = ""; o0.textContent = "（新建）"; el.appendChild(o0);
+  Object.keys(store()).forEach(k => {
+    const o = document.createElement("option"); o.value = k; o.textContent = k; el.appendChild(o);
+  });
+  if (selected) el.value = selected;
+}
+function savePersona() {
+  const name = document.getElementById("pName").value.trim();
+  if (!name) { alert("请输入名字（会作为保存名称）"); return; }
+  const s = store();
+  s[name] = Object.fromEntries(P_FIELDS.map(f => [f, document.getElementById(f).value]));
+  localStorage.setItem("aibijo_personas", JSON.stringify(s));
+  refreshSlots(name);
+}
+function loadPersona() {
+  const k = document.getElementById("personaSlot").value;
+  if (!k) return;
+  const p = store()[k]; if (!p) return;
+  P_FIELDS.forEach(f => document.getElementById(f).value = p[f] || "");
+}
+function deletePersona() {
+  const k = document.getElementById("personaSlot").value;
+  if (!k) return;
+  const s = store(); delete s[k];
+  localStorage.setItem("aibijo_personas", JSON.stringify(s));
+  refreshSlots("");
+}
+
+function v(id) { return document.getElementById(id).value.trim(); }
+function generate() {
+  const type = v("postType");
+  const typeText = type === "mix"
+    ? `以下3种类型各写1条:\n${TYPE_GUIDE.daily}\n${TYPE_GUIDE.consult}\n${TYPE_GUIDE.story}`
+    : `3条都写同一种类型，但换不同角度:\n${TYPE_GUIDE[type]}`;
+  const ending = v("ending") === "q"
+    ? "结尾用自然的小提问收住，让别人有想回复的空间（每条用不同的问法）"
+    : "不要提问，用有回味的一句话收尾";
+  const lenMap = { short: "80字以内", mid: "140字以内", long: "140~250字左右分几行" };
+  const persona = [
+    v("pName") && `名字: ${v("pName")}`,
+    `年龄: ${v("pAge") || "24岁"}（20岁以上成人）`,
+    v("pJob") && `职业: ${v("pJob")}`,
+    v("pChar") && `性格: ${v("pChar")}`,
+    v("pTone") && `说话风格: ${v("pTone")}`,
+    v("pHobby") && `兴趣: ${v("pHobby")}`,
+    v("pWhy") && `开小号的原因: ${v("pWhy")}`,
+    v("pDist") && `和粉丝距离感: ${v("pDist")}`,
+  ].filter(Boolean).join("\n");
+  const memo = v("imageMemo");
+
+  const prompt =
+`你是一个在X（原Twitter）上运营虚构成年女性角色的账号管理者。请完全代入下面这个角色，给这张图片写3条中文投稿文案。
+
+【角色设定】
+${persona || "24岁东京OL。清纯但有点怕生。说话亲切随和"}
+
+【图片内容】
+场景: ${v("scene")}${memo ? `\n详细: ${memo}` : ""}
+（如果有上传图片，可以自然提到图中的小物・光线・服装）
+
+【投稿类型】
+${typeText}
+
+【写作规则】
+- 第一人称口语。像跟朋友发LINE一样的温度感，不要写太工整
+- 必须包含「今天发生的事」「一个小失败或小纠结」「一点小情绪」之一，不要只是图片说明文
+- ${ending}
+- 每条长度${lenMap[v("length")]}
+- 表情符号0~2个。不要颜文字、hashtag、宣传引流、求关注之类的
+- 不要AI感的敬语（比如「呢」「哦」「怎么样呢」）或者广告语感
+- 3条要各有不同氛围
+
+请直接输出3条带编号的文案，不要加任何解释。`;
+  document.getElementById("output").value = prompt;
+}
+
+function copyPrompt() {
+  const ta = document.getElementById("output");
+  if (!ta.value) return;
+  navigator.clipboard.writeText(ta.value).then(() => {
+    const b = document.getElementById("copyBtn");
+    b.textContent = "✓ 已复制"; b.classList.add("copy-ok");
+    setTimeout(() => { b.textContent = "复制"; b.classList.remove("copy-ok"); }, 1500);
+  });
+}
+
+fillScenes();
+refreshSlots("");
+</script>
+</body>
+</html>
