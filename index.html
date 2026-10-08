@@ -248,7 +248,7 @@ function loadGender(key) {
   if (old) old.remove();
   var s = document.createElement('script');
   s.id = 'gender-data';
-  s.src = cfg.file;
+  s.src = cfg.file + '?v=200';
   s.onload = function() {
     initAfterLoad();
   };
