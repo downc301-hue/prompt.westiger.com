@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI美女 投稿文案生成器 | X运营</title>
+<title>AI投稿文案生成器 | X运营</title>
 <style>
   :root {
     --bg: #0f1117; --card: #1a1d27;
@@ -60,7 +60,7 @@
 <body>
 <div class="container">
   <header>
-    <h1>AI美女 投稿文案生成器</h1>
+    <h1>AI投稿文案生成器</h1>
     <p>选择好角色设定和图片场景，自动生成让 豆包 写3条文案的提示词。<br>复制后粘贴给 豆包 即可。图片生成请去 <a href="index.html">提示词生成器</a>。</p>
   </header>
 
@@ -73,7 +73,7 @@
       <div><label>职业</label><input type="text" id="pJob" placeholder="一线城市白领"></div>
       <div><label>性格</label><input type="text" id="pChar" placeholder="清纯但有点怕生"></div>
       <div><label>说话风格</label><input type="text" id="pTone" placeholder="亲切随和。有点小寂寞。少用表情符号"></div>
-      <div><label>兴趣爱好</label><input type="text" id="pHobby" placeholder="咖啡馆、旅行、看电影"></div>
+      <div><label>兴趣爱好</label><input type="text" id="pHobby" placeholder="星巴克、旅行、看电影"></div>
       <div><label>开小号的原因</label><input type="text" id="pWhy" placeholder="想发平时不能说的真心话"></div>
       <div><label>和粉丝的距离感</label><input type="text" id="pDist" placeholder="朋友以上、恋人未满"></div>
     </div>
@@ -135,7 +135,7 @@
 </div>
 
 <script>
-const SCENES = ["自家卧室（酒店风）","夜晚卧室","清晨厨房","放学后咖啡馆","约会对座","刚起床自拍","假日清晨床上","沐浴时间","健身归来","温泉旅馆","深夜便利店归来","夜间自助洗衣店","正午海滩","傍晚海滩","海边步道","夜间泳池","夏日祭典","雨天无人车站","夜间街头","护士休息时间","保育园教室","新人白领办公室","咖啡馆店员后台","体育场观赛","更衣室镜前","夜间酒会归来","其他（在备注里说明）"];
+const SCENES = ["自家卧室（酒店风）","夜晚卧室","清晨厨房","放学后星巴克","约会对座","刚起床自拍","假日清晨床上","沐浴时间","健身归来","温泉旅馆","深夜便利店归来","夜间自助洗衣店","正午海滩","傍晚海滩","海边步道","夜间泳池","夏日祭典","雨天无人车站","夜间街头","护士休息时间","保育园教室","新人白领办公室","星巴克收银台","体育场观赛","更衣室镜前","夜间酒会归来","其他（在备注里说明）"];
 
 const TYPE_GUIDE = {
   daily: "【日常汇报型】今天发生的一件小事+一点小情绪。例:「明明涂了防晒霜，肩膀还是有点红了的感觉」",
