@@ -8,11 +8,7 @@
 
 看不懂文字流程？直接看这个保姆级教程：
 
-<div align="center">
-  <a href="https://www.bilibili.com/video/BV14Apv6qE2H" target="_blank">
-    <img src="https://img.shields.io/badge/▶️_点击观看-保姆级教程-FB7299?style=for-the-badge&logo=bilibili&logoColor=white&labelColor=00A1D6" alt="B站视频教程" width="320">
-  </a>
-</div>
+**👉 [【AI提示词生成器】保姆级教程 —— BV14Apv6qE2H](https://www.bilibili.com/video/BV14Apv6qE2H)**
 
 ---
 
