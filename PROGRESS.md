@@ -26,11 +26,11 @@ ba# 项目进度说明文档
 
 ## 当前版本
 
-**v1.0.0** — 首版正式版，已完成本地化和数据拆分架构
+**v2.0.1** — 补丁更新：README 新增 B 站教程视频
 
 版本号位置：
-- `index.html` 第 7 行：`<meta name="app-version" content="1.0.0">`
-- `index.html` 第 61 行：标题右侧版本号徽章 `<span id="version-badge">v1.0.0</span>`
+- `index.html` 第 7 行：`<meta name="app-version" content="2.0.1">`
+- `index.html` 第 95 行：标题右侧版本号徽章 `<span id="version-badge">v2.0.1</span>`
 
 ---
 
@@ -143,7 +143,42 @@ function loadGender(key) {
 
 ## 更新内容
 
-### v1.0.0（当前版本）— 首版正式版
+### v2.0.1（当前版本）— README 新增教程视频
+
+**发布日期**：2026-10-13
+
+**主要变更**：
+
+1. ✅ **README.md 新增 B 站视频教程**
+   - 案例展示和使用流程之间插入「🎬 视频教程」小节
+   - 链接：https://www.bilibili.com/video/BV14Apv6qE2H
+
+---
+
+### v2.0.0 — 性别 × 年龄段六类数据切换
+
+**发布日期**：2026-10-XX
+
+**主要变更**：
+
+1. ✅ **新增性别 / 年龄段 Tab 切换 UI**
+   - 页面顶部新增「女性 / 男性」和「青年 / 中年 / 老年」两个 Tab 组
+   - 切换性别时，主题色同步切换（女性粉紫色系 ↔ 男性蓝色系）
+
+2. ✅ **动态加载 6 组数据文件**
+   - 预注册 `female-young` / `female-middle` / `female-old` / `male-young` / `male-middle` / `male-old` 共 6 组
+   - 切换 Tab 时自动移除旧 script 标签、加载新数据文件并刷新所有下拉框
+
+3. ✅ **男性数据文件初版完成**
+   - `data/male-young.js` / `male-middle.js` / `male-old.js` 完成基础数据
+   - 体型、发型、表情、场景描述全部替换为男性版本
+
+4. ✅ **ethnicity() 和 ageLabel() 函数动态化**
+   - 人物描述中的性别和年龄不再硬编码，随 Tab 选择自动拼接正确描述
+
+---
+
+### v1.0.0 — 首版正式版
 
 **发布日期**：2025-10-XX
 
