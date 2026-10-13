@@ -4,6 +4,18 @@
 
 ---
 
+## 🎬 视频教程（6 分钟快速上手）
+
+看不懂文字流程？直接看这个保姆级教程：
+
+<div align="center">
+  <a href="https://www.bilibili.com/video/BV14Apv6qE2H" target="_blank">
+    <img src="https://img.shields.io/badge/▶️_点击观看-保姆级教程-FB7299?style=for-the-badge&logo=bilibili&logoColor=white&labelColor=00A1D6" alt="B站视频教程" width="320">
+  </a>
+</div>
+
+---
+
 ## 🚀 立即体验
 
 **👉 [https://prompt.westiger.com](https://prompt.westiger.com)**
@@ -108,14 +120,6 @@
 选择「保持发型发饰」模式，固定造型快速尝试不同面部特征。
 
 > 📎 [查看本案例完整提示词](./ai-bijo-prompt-maker/example/case6-prompt.txt)
-
----
-
-## 🎬 视频教程
-
-看不懂文字流程？先看这个 B 站教程视频，6 分钟快速上手：
-
-**👉 [【AI提示词生成器】保姆级教程 —— BV14Apv6qE2H](https://www.bilibili.com/video/BV14Apv6qE2H)**
 
 ---
 
