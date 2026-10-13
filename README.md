@@ -53,31 +53,31 @@
 
 **Case 1 · 夏日窗边 · 清纯日常**
 
-![case1](./ai-bijo-prompt-maker/example/case1.jpg)
+![case1](./example/case1.jpg)
 
 纯提示词生成，无参考图。夏日公寓窗边自然光，白V领+牛仔短裤，微卷中长发，清透自然妆容。
 
-> 📎 [查看本案例完整提示词](./ai-bijo-prompt-maker/example/case1-prompt.txt)
+> 📎 [查看本案例完整提示词](./example/case1-prompt.txt)
 
 ---
 
 **Case 2 · 夜晚卧室 · 私密女友感**
 
-![case2](./ai-bijo-prompt-maker/example/case2.jpg)
+![case2](./example/case2.jpg)
 
 纯提示词生成，暖灯光室内，象牙色针织+开衫，慵懒丸子头，亲密注视表情。
 
-> 📎 [查看本案例完整提示词](./ai-bijo-prompt-maker/example/case2-prompt.txt)
+> 📎 [查看本案例完整提示词](./example/case2-prompt.txt)
 
 ---
 
 **Case 3 · 雨天无人车站 · 电影感**
 
-![case3](./ai-bijo-prompt-maker/example/case3.jpg)
+![case3](./example/case3.jpg)
 
 纯提示词生成，蓝色冷调雨天，湿白衬衫+褶裥裙，透明伞，电影一幕般的静谧氛围。
 
-> 📎 [查看本案例完整提示词](./ai-bijo-prompt-maker/example/case3-prompt.txt)
+> 📎 [查看本案例完整提示词](./example/case3-prompt.txt)
 
 ---
 
@@ -87,11 +87,11 @@
 
 | 参考图 | 生成结果 |
 |:---:|:---:|
-| ![case4-ref](./ai-bijo-prompt-maker/example/case4-1.jpg) | ![case4-result](./ai-bijo-prompt-maker/example/case4-result.jpg) |
+| ![case4-ref](./example/case4-1.jpg) | ![case4-result](./example/case4-result.jpg) |
 
 上传左侧参考图，选择「保持人脸」模式，换场景后右侧为豆包生成结果。
 
-> 📎 [查看本案例完整提示词](./ai-bijo-prompt-maker/example/case4-prompt.txt)
+> 📎 [查看本案例完整提示词](./example/case4-prompt.txt)
 
 ---
 
@@ -99,11 +99,11 @@
 
 | 参考图 | 生成结果 |
 |:---:|:---:|
-| ![case5-ref](./ai-bijo-prompt-maker/example/case5-1.jpg) | ![case5-result](./ai-bijo-prompt-maker/example/case5-result.jpg) |
+| ![case5-ref](./example/case5-1.jpg) | ![case5-result](./example/case5-result.jpg) |
 
 多次迭代保持人设一致性，适用于运营固定角色账号。
 
-> 📎 [查看本案例完整提示词](./ai-bijo-prompt-maker/example/case5-prompt.txt)
+> 📎 [查看本案例完整提示词](./example/case5-prompt.txt)
 
 ---
 
@@ -111,11 +111,11 @@
 
 | 参考图 | 生成结果 |
 |:---:|:---:|
-| ![case6-ref](./ai-bijo-prompt-maker/example/case6-1.jpg) | ![case6-result](./ai-bijo-prompt-maker/example/case6-result.jpg) |
+| ![case6-ref](./example/case6-1.jpg) | ![case6-result](./example/case6-result.jpg) |
 
 选择「保持发型发饰」模式，固定造型快速尝试不同面部特征。
 
-> 📎 [查看本案例完整提示词](./ai-bijo-prompt-maker/example/case6-prompt.txt)
+> 📎 [查看本案例完整提示词](./example/case6-prompt.txt)
 
 ---
 
